@@ -1,0 +1,9 @@
+sense_mypersonhere;
+< mypersonhere ?  
+   say_color_printer1_green :
+   (not mypersonhere) ?
+>;
+
+
+
+

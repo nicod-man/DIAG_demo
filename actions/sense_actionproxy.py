@@ -28,6 +28,7 @@ sys.path.append("../fluents")  # fluents folder
 from lightcolor_fluentproxy import LightColorFluentProxy
 from open_fluentproxy import OpenFluentProxy
 from personhere_fluentproxy import PersonHereFluentProxy
+from mypersonhere_fluentproxy import MyPersonHereFluentProxy
 
 class SenseActionProxy(ActionProxy):
 
@@ -55,6 +56,9 @@ class SenseActionProxy(ActionProxy):
             l = PersonHereFluentProxy(sensingfluent, rosnode=False)
             l.sensingStep()
 
+        elif sensingfluent=='mypershonhere':
+            l = MyPersonHereFluentProxy(sensingfluent, rosnode=False)
+            l.sensingStep()
         else:
             print("ERROR !!! Cannot sense value of fluent %s !!!" %(sensingfluent))
 

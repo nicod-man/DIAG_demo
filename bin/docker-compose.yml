@@ -19,8 +19,25 @@ services:
     - "sleep 5 && rosrun stage_environments start_simulation.py --tmux --server -server_port 9235"
 
   navigation:
-    image: iocchi/marrtino:navigation
+    image: nicodman/thesis:marrtinonavigation
     container_name: navigation
+    dns: 8.8.8.8
+    network_mode: "host"
+    tty: true
+    privileged: true
+    devices:
+        - /dev/video0:/dev/video0
+    environment:
+    - DISPLAY=:0
+    - ROS_IP=$ROS_IP
+    - ROBOT_TYPE=$ROBOT_TYPE
+    volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw          
+    
+
+  speech:
+    image: nicodman/thesis:marrtinospeech
+    container_name: speech
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
@@ -28,22 +45,14 @@ services:
     environment:
     - DISPLAY=:0
     - ROS_IP=$ROS_IP
-    - ROBOT_TYPE=$ROBOT_TYPE
-
-  speech:
-    image: iocchi/marrtino:speech
-    container_name: speech
-    dns: 8.8.8.8
-    network_mode: "host"
-    tty: true
-    privileged: true
-    environment:
-    - ROS_IP=$ROS_IP
-    volumes:
+    devices:
+        - /dev/video0:/dev/video0
+    volumes: 
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw          
     - /dev:/dev
 
   vision:
-    image: iocchi/marrtino:vision
+    image: nicodman/thesis:myvision
     container_name: vision
     dns: 8.8.8.8
     network_mode: "host"
@@ -53,33 +62,42 @@ services:
     - DISPLAY=:0
     - ROS_IP=$ROS_IP
     - CAMRES=$CAMRES
+    devices:
+        - /dev/video0:/dev/video0
     volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw          
     - /dev:/dev
 
-  stagepersondetection:
-    image: iocchi/stagepersondetection
-    container_name: stagepersondetection
-    dns: 8.8.8.8
-    network_mode: "host"
-    tty: true
-    privileged: true
-    entrypoint:
-    - bash
-    - -ci
-    - "python3 stageperson_net.py -modelname spd --server -server_port 9250"
+  # stagepersondetection:
+    # image: iocchi/stagepersondetection
+    # container_name: stagepersondetection
+    # dns: 8.8.8.8
+    # network_mode: "host"
+    # tty: true
+    # privileged: true
+    # entrypoint:
+    # - bash
+    # - -ci
+    # - "python3 stageperson_net.py -modelname spd --server -server_port 9250"
 
   actions:
-    image: iocchi/marrtino:base
+    image: nicodman/thesis:myactions
     container_name: actions
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
     volumes:
-    - $DEMO_DIR:/home/robot/src/DIAG_demo
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw          
+    - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+    devices:
+        - /dev/video0:/dev/video0
     entrypoint:
     - bash
     - -ci
-    - "sleep 10 && cd ~/src/DIAG_demo/bin && ./init.bash"
+    - "sleep 10 && cd ~/src/forked_DIAG_DEMO/DIAG_demo/bin && ./init.bash"
 
   pnp:
     image: iocchi/pnp
@@ -87,11 +105,73 @@ services:
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
     volumes:
-    - $DEMO_DIR:/home/robot/src/DIAG_demo
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw          
+    - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+    devices:
+        - /dev/video0:/dev/video0
     entrypoint:
     - bash
     - -ci
     - "sleep 10 && roscd pnp_ros && ./init.bash"
+  
+  persondetection:
+    image: nicodman/thesis:persondetection
+    container_name: persondetection
+    dns: 8.8.8.8
+    network_mode: "host"
+    stdin_open: true #docker run -i
+    tty: true               #docker run -t
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+    privileged: true
+    devices:
+        - /dev/video0:/dev/video0
+    volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw          
+        - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+        - /dev:/dev        
 
-
+   # facedetection:
+        # image: facedetection:latest
+        # container_name: facedetection_container
+        # dns: 8.8.8.8
+        # network_mode: "host"
+        # stdin_open: true #docker run -i
+        # tty: true               #docker run -t
+        # environment:
+            # - DISPLAY=:0
+        # privileged: true
+        # devices:
+            # - /dev/video0:/dev/video0
+        # volumes:
+            # - $SPD_DIR/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+            # - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        # entrypoint:
+            # - bash
+            # - -ci
+            # - "python3 stage_fd.py --server -modelname fer"        
+            
+    # fer:
+        # image: facexpressionrecognition:latest
+        # container_name: fer_container
+        # dns: 8.8.8.8
+        # network_mode: "host"
+        # stdin_open: true #docker run -i
+        # tty: true               #docker run -t
+        # environment:
+            # - DISPLAY=:0
+        # privileged: true
+        # devices:
+            # - /dev/video0:/dev/video0
+        # volumes:
+            # - $SPD_DIR/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+            # - /tmp/.X11-unix:/tmp/.X11-unix:rw    
+        # entrypoint:
+            # - bash
+            # - -ci
+            # - "python3 stage_fer.py --server -modelname fer"        

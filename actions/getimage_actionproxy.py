@@ -26,6 +26,7 @@ params: imagefolder
 class GetImageActionProxy(ActionProxy):
 
     def __init__(self, actionname):
+
         ActionProxy.__init__(self, actionname)
         self.takephoto_pub = rospy.Publisher(TOPIC_takephoto, String, queue_size=1)
         print("Publisher to topic: %s" %TOPIC_takephoto)
@@ -59,4 +60,3 @@ if __name__ == "__main__":
         a.execute(params)  # blocking, CTRL-C to interrupt
     else:
         a.run_server()     # blocking, CTRL-C to interrupt
-

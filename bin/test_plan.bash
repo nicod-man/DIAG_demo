@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # plan folder
-docker exec -it pnp bash -ci "rosparam set /pnp_ros/plan_folder /home/robot/src/DIAG_demo/plans"
+docker exec -it pnp bash -ci "rosparam set /pnp_ros/plan_folder /home/robot/src/forked_DIAG_DEMO/DIAG_demo/plans"
 
 PLAN="DIAG_printer_1"
 
@@ -10,7 +10,7 @@ if [ "$1" != "" ]; then
 fi
 
 if [ "$PLAN" != "stop" ]; then
-  docker exec -it pnp bash -ci "cd ~/src/DIAG_demo/plans && pnpgen_translator inline $PLAN.plan"
+  docker exec -it pnp bash -ci "cd ~/src/forked_DIAG_DEMO/DIAG_demo/plans && pnpgen_translator inline $PLAN.plan"
 fi
 
 docker exec -it pnp bash -ci "rostopic pub /pnp/planToExec std_msgs/String \"data: '$PLAN'\" --once"

@@ -64,11 +64,11 @@ class PersonHereFluentProxy(FluentProxy):   # <--- fluent class
                 return
 
 
+
         s = String()
         s.data = 'send %s %s' %(self.server,self.port)
 
         self.takephoto_pub.publish(s)
-
         rospy.sleep(0.2)
 
         if (self.server != 'localhost') and (self.server != '127.0.0.1'):
