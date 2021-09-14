@@ -128,41 +128,6 @@ services:
     - -ci
     - "sleep 10 && roscd pnp_ros && ./init.bash"
 
-  accompaniment:
-   image: nicodman/thesis:accompaniment
-   container_name: accompaniment
-   dns: 8.8.8.8
-   network_mode: "host"
-   tty: true
-   privileged: true
-   environment:
-       - LOCAL_USER_ID=$LOCAL_USER_ID
-       - LOCAL_GROUP_ID=$LOCAL_GROUP_ID
-       - LOCAL_GROUP_NAME=$LOCAL_GROUP_NAME
-       - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
-       - DISPLAY=$DISPLAY
-       - ROS_IP=$ROS_IP
-       - CAMRES=$CAMRES
-       - ROBOT_TYPE=$ROBOT_TYPE
-       - QT_X11_NO_MITSHM=1
-       - MARRTINO_APPS_HOME=/root/marrtino_apps
-   devices:
-       - /dev/video0:/dev/video0
-   volumes:
-       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-       - $HOME/.Xauthority:/root/.Xauthority:rw
-       - /dev:/dev
-       - $MARRTINO_APPS_HOME:/root/marrtino_apps
-       - $BARCELLONA_HOME/src:/root/catkin_ws/src
-       - $HOME/exchange:/home/user/exchange
-       - /var/run/docker.sock:/var/run/docker.sock
-       - /home/nico/stage_environments:/root/marrtino_apps/accompaniment/stage_environments
-       # - /dirname $SSH_AUTH_SOCK:/dirname $SSH_AUTH_SOCK
-    # entrypoint:
-        # - bash
-        # - -ci
-        # - "cd marrtino_apps/accompaniment && python start_accompaniment_nodes.py"
-
   persondetection:
     image: nicodman/thesis:persondetection
     container_name: persondetection
@@ -179,7 +144,7 @@ services:
     volumes:
         - /tmp/.X11-unix:/tmp/.X11-unix:rw
         - /dev:/dev
-        - /home/nico/Scrivania/thesis/models/Person-Detection-and-Tracking:/home/robot/src/Person-Detection-and-Tracking
+        - $MODELS_HOME/Person-Detection-and-Tracking:/home/robot/src/Person-Detection-and-Tracking
 
   facedetection:
     image: nicodman/thesis:facedetection
@@ -195,7 +160,7 @@ services:
     devices:
          - /dev/video0:/dev/video0
     volumes:
-         - /home/nico/Scrivania/thesis/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+         - $MODELS_HOME/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
          - /tmp/.X11-unix:/tmp/.X11-unix:rw
          - /dev:/dev
          - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
@@ -219,7 +184,7 @@ services:
     devices:
         - /dev/video0:/dev/video0
     volumes:
-        - /home/nico/Scrivania/thesis/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+        - $MODELS_HOME/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
         - /tmp/.X11-unix:/tmp/.X11-unix:rw
         - /dev:/dev
         - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
