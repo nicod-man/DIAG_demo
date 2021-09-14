@@ -100,7 +100,7 @@ For development or to run the last version of code, follow these additional inst
         
 # Quick starter
 
-In `~/.bashrc`, create some alias (i.e.:) both for testing plans and starting simulator:
+In `~/.bashrc`, create some alias both for testing plans and starting simulator:
 
         alias startdemo='cd <path_to_DIAG_demo>/bin && ./start.bash'
         alias startdemodev='cd <path_to_DIAG_demo>/bin && ./start.bash dev'
