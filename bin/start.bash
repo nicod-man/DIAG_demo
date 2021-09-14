@@ -7,9 +7,11 @@ export ROS_IP=127.0.0.1
 export ROBOT_TYPE="stage"
 export DEMO_DIR=`pwd | gawk '{ print gensub(/\/bin/, "", 1) }'`
 
-# if [ "$1" == "dev" ]; then
-  # DCF=docker-compose-dev.yml
-# fi
+if [ "$1" == "dev" ]; then
+  DCF=docker-compose-dev.yml
+  echo "Starting in dev mode"
+  sleep 3
+fi
 # if [ "$1" == "vnc" ]; then
   # DCF=docker-compose-vnc.yml
   # XSERVER=xserver
@@ -31,21 +33,21 @@ export DEMO_DIR=`pwd | gawk '{ print gensub(/\/bin/, "", 1) }'`
 # fi
 
 # By using the parameter "--rmi all" all the images that comes from the services are being deleted and pulled again (latest version)
-if [ "$1" == "rmi" ]; then 
+if [ "$2" == "rmi" ]; then
   docker-compose down --rmi all
 
-elif [ "$1" == "local" ]; then 
+elif [ "$2" == "local" ]; then
 	docker-compose down --rmi local
 
 else
 # pull docker services
   docker-compose -f $DCF pull $XSERVER stage navigation speech vision  \
-     pnp persondetection facedetection fer actions legdetection
+     pnp persondetection facedetection fer actions
 fi
 
   # run docker services
   docker-compose -f $DCF up -d $XSERVER stage navigation speech vision \
-     pnp persondetection facedetection fer actions legdetection
+     pnp persondetection facedetection fer actions
 
 
 sleep 10
