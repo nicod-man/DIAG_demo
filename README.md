@@ -19,15 +19,7 @@ Tested on Linux Ubuntu systems with Docker version 19.03.6 and docker-compose ve
 
 * Clone this repository
 
-        git clone https://github.com/iocchi/DIAG_demo.git
-
-
-* VNC-based xserver (if you want to run it GUI-less or have problems with your graphic card)
-
-    Note: docker image for stage simulator does not run with Nvidia drivers.
-    If you have Nvidia drivers on your host OS, use the VNC server.
-
-        docker pull devrt/xserver
+        git clone https://github.com/nicod-man/DIAG_demo
 
 
 # Run
@@ -42,12 +34,6 @@ On host OS, move to `bin` folder of this repository
     Start using OS display (it does not work with Nvidia cards)
 
         ./start.bash
-
-    or start with VNC
-
-        ./start.bash vnc
-
-    and open a browser at `http://localhost:3000` to see the simulator.
 
 
 * Test actions
@@ -85,15 +71,19 @@ For development or to run the last version of code, follow these additional inst
 
 * Download MARRtino apps
 
-        git clone --depth 1 https://bitbucket.org/iocchi/marrtino_apps.git
+        git clone --depth clone https://nicodman@bitbucket.org/nicodman/marrtino_apps.git
 
-* Set `MARRTINO_APPS_HOME` environment variable
+* Set `MARRTINO_APPS_HOME`, `MODELS_HOME` environment variables
 
-    Set `MARRTINO_APPS_HOME` to  `marrtino_apps` folder
+    Set
+     - `MARRTINO_APPS_HOME` to  `marrtino_apps` folder
+     - `MODELS_HOME` to `<path_to_models_folder>` folder
+    
 
     In `~/.bashrc`
 
         export MARRTINO_APPS_HOME=<PATH_TO>/marrtino_apps
+        export MODELS_HOME=<PATH_TO/models
 
 
 * Open a new terminal before running the demo
@@ -101,8 +91,21 @@ For development or to run the last version of code, follow these additional inst
     Check the settings
 
         echo $MARRTINO_APPS_HOME
+        echo $MODELS_HOME
 
 * Start all services in development mode
 
         ./start.bash dev
+        
+        
+# Quick starter
 
+In `~/.bashrc`, create some alias (i.e.:) both for testing plans and starting simulator:
+
+        alias startdemo='cd <path_to_DIAG_demo>/bin && ./start.bash'
+        alias startdemodev='cd <path_to_DIAG_demo>/bin && ./start.bash dev'
+        alias stopdemo='cd <path_to_DIAG_demo>/bin && ./stop.bash'
+        
+        alias testplanN='cd <path_to_DIAG_demo>/bin && ./test_plan.bash DIAG_printer_N'
+        
+Then source the bashrc file `source $HOME/.bashrc`.
