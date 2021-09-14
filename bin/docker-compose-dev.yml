@@ -8,68 +8,71 @@ services:
     network_mode: "host"
     tty: true
     environment:
-    - DISPLAY=:0
-    - ROS_IP=$ROS_IP
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
     volumes:
-    - /tmp/.X11-unix:/tmp/.X11-unix
-    - $HOME/.Xauthority:/home/robot/.Xauthority
-    - $HOME/src/stage_environments:/home/robot/src/stage_environments
+        - /tmp/.X11-unix:/tmp/.X11-unix
+        - $HOME/.Xauthority:/home/robot/.Xauthority
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+        # - /home/nico/stage_environments:/home/robot/src/stage_environments
     entrypoint:
-    - bash
-    - -ci
-    - "sleep 5 && rosrun stage_environments start_simulation.py --tmux --server -server_port 9235"
+        - bash
+        - -ci
+        - "sleep 5 && rosrun stage_environments start_simulation.py --tmux --server -server_port 9235"
 
   navigation:
-    image: marrtino:navigation
-    build:
-      context: $MARRTINO_APPS_HOME/docker
-      dockerfile: Dockerfile.navigation
+    image: nicodman/thesis:marrtinonavigation
     container_name: navigation
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
     privileged: true
+    # devices:
+        # - /dev/video0:/dev/video0
     environment:
-    - ROS_IP=$ROS_IP
-    - ROBOT_TYPE=$ROBOT_TYPE
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+        - ROBOT_TYPE=$ROBOT_TYPE
     volumes:
-    - /dev:/dev
-    - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
-    - $HOME/src/gradient_based_navigation:/home/robot/src/gradient_based_navigation
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
 
   speech:
-    image: marrtino:speech
-    build:
-      context: $MARRTINO_APPS_HOME/docker
-      dockerfile: Dockerfile.speech
+    image: nicodman/thesis:marrtinospeech
     container_name: speech
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
     privileged: true
     environment:
-    - ROS_IP=$ROS_IP
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+        - ROBOT_TYPE=$ROBOT_TYPE
+    # devices:
+        # - /dev/video0:/dev/video0
     volumes:
-    - /dev:/dev
-    - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - /dev:/dev
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
 
   vision:
-    image: marrtino:vision
-    build:
-      context: $MARRTINO_APPS_HOME/docker
-      dockerfile: Dockerfile.vision
+    image: nicodman/thesis:myvision
     container_name: vision
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
     privileged: true
     environment:
-    - DISPLAY=:0
-    - ROS_IP=$ROS_IP
-    - CAMRES=$CAMRES
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+        - CAMRES=$CAMRES
+        - ROBOT_TYPE=$ROBOT_TYPE
+    # devices:
+        # - /dev/video0:/dev/video0
     volumes:
-    - /dev:/dev
-    - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - /dev:/dev
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
 
   stagepersondetection:
     image: iocchi/stagepersondetection
@@ -78,26 +81,31 @@ services:
     network_mode: "host"
     tty: true
     privileged: true
-    volumes:
-    - $HOME/src/stagepersondetection:/home/robot/src/stagepersondetection
     entrypoint:
     - bash
     - -ci
     - "python3 stageperson_net.py -modelname spd --server -server_port 9250"
 
-
   actions:
-    image: marrtino:base
+    image: nicodman/thesis:myactions
     container_name: actions
     dns: 8.8.8.8
     network_mode: "host"
     tty: true
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+        - ROBOT_TYPE=$ROBOT_TYPE
     volumes:
-    - $HOME/src/DIAG_demo:/home/robot/src/DIAG_demo
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+    # devices:
+        # - /dev/video0:/dev/video0
     entrypoint:
-    - bash
-    - -ci
-    - "sleep 10 && cd ~/src/DIAG_demo/bin && ./init.bash"
+        - bash
+        - -ci
+        - "sleep 15 && cd ~/src/forked_DIAG_DEMO/DIAG_demo/bin && ./init.bash"
 
   pnp:
     image: iocchi/pnp
@@ -106,16 +114,140 @@ services:
     network_mode: "host"
     tty: true
     environment:
-    - DISPLAY=:0
-    - ROS_IP=$ROS_IP
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+        - ROBOT_TYPE=$ROBOT_TYPE
     volumes:
-    - /tmp/.X11-unix:/tmp/.X11-unix
-    - $HOME/.Xauthority:/home/robot/.Xauthority
-    - $HOME/src/DIAG_demo:/home/robot/src/DIAG_demo
-    - $HOME/src/PetriNetPlans:/home/robot/src/PetriNetPlans
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+    # devices:
+        # - /dev/video0:/dev/video0
     entrypoint:
     - bash
     - -ci
     - "sleep 10 && roscd pnp_ros && ./init.bash"
 
+  accompaniment:
+   image: nicodman/thesis:accompaniment
+   container_name: accompaniment
+   dns: 8.8.8.8
+   network_mode: "host"
+   tty: true
+   privileged: true
+   environment:
+       - LOCAL_USER_ID=$LOCAL_USER_ID
+       - LOCAL_GROUP_ID=$LOCAL_GROUP_ID
+       - LOCAL_GROUP_NAME=$LOCAL_GROUP_NAME
+       - SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+       - DISPLAY=$DISPLAY
+       - ROS_IP=$ROS_IP
+       - CAMRES=$CAMRES
+       - ROBOT_TYPE=$ROBOT_TYPE
+       - QT_X11_NO_MITSHM=1
+       - MARRTINO_APPS_HOME=/root/marrtino_apps
+   devices:
+       - /dev/video0:/dev/video0
+   volumes:
+       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+       - $HOME/.Xauthority:/root/.Xauthority:rw
+       - /dev:/dev
+       - $MARRTINO_APPS_HOME:/root/marrtino_apps
+       - $BARCELLONA_HOME/src:/root/catkin_ws/src
+       - $HOME/exchange:/home/user/exchange
+       - /var/run/docker.sock:/var/run/docker.sock
+       - /home/nico/stage_environments:/root/marrtino_apps/accompaniment/stage_environments
+       # - /dirname $SSH_AUTH_SOCK:/dirname $SSH_AUTH_SOCK
+    # entrypoint:
+        # - bash
+        # - -ci
+        # - "cd marrtino_apps/accompaniment && python start_accompaniment_nodes.py"
 
+  persondetection:
+    image: nicodman/thesis:persondetection
+    container_name: persondetection
+    dns: 8.8.8.8
+    network_mode: "host"
+    stdin_open: true #docker run -i
+    tty: true               #docker run -t
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+    privileged: true
+    devices:
+        - /dev/video0:/dev/video0
+    volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - /dev:/dev
+        - /home/nico/Scrivania/thesis/models/Person-Detection-and-Tracking:/home/robot/src/Person-Detection-and-Tracking
+
+  facedetection:
+    image: nicodman/thesis:facedetection
+    container_name: facedetection
+    dns: 8.8.8.8
+    network_mode: "host"
+    stdin_open: true #docker run -i
+    tty: true        #docker run -t
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+    privileged: true
+    devices:
+         - /dev/video0:/dev/video0
+    volumes:
+         - /home/nico/Scrivania/thesis/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+         - /tmp/.X11-unix:/tmp/.X11-unix:rw
+         - /dev:/dev
+         - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+         - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+    entrypoint:
+         - bash
+         - -ci
+         - "python3 stage_fd.py --server -modelname fer"
+
+  fer:
+    image: nicodman/thesis:faceExpression
+    container_name: fer
+    dns: 8.8.8.8
+    network_mode: "host"
+    stdin_open: true #docker run -i
+    tty: true        #docker run -t
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+    privileged: true
+    devices:
+        - /dev/video0:/dev/video0
+    volumes:
+        - /home/nico/Scrivania/thesis/models/Real-Time-Face-Expression-Recognition:/home/robot/src/Real-Time-Face-Expression-Recognition
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - /dev:/dev
+        - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+    entrypoint:
+        - bash
+        - -ci
+        - "python3 stage_fer.py --server -modelname fer"
+
+  legdetection:
+    image: nicodman/thesis:legdetection
+    container_name: legdetection
+    dns: 8.8.8.8
+    network_mode: "host"
+    stdin_open: true #docker run -i
+    tty: true        #docker run -t
+    environment:
+        - DISPLAY=:0
+        - ROS_IP=$ROS_IP
+    privileged: true
+    devices:
+        - /dev/video0:/dev/video0
+    volumes:
+        - $DEMO_DIR:/home/robot/src/forked_DIAG_DEMO/DIAG_demo
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - /dev:/dev
+        - $MARRTINO_APPS_HOME:/home/robot/src/marrtino_apps
+    entrypoint:
+        - bash
+        - -ci
+        - "roslaunch edge_leg_detector edge_leg_detector.launch laser_scan:=/scan"

@@ -1,0 +1,6 @@
+sense_mypersonhere;
+< mypersonhere ?
+    welcome :
+  (not mypersonhere) ?
+    say_color_printer1_red;
+>;

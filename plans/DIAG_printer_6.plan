@@ -1,9 +1,20 @@
-sense_mypersonhere;
-< mypersonhere ?  
-   say_color_printer1_green :
-   (not mypersonhere) ?
+goto_printer1;
+sense_lightcolor;
+< lightcolor_printer1light_green ?
+    goto_door3out;
+    sense_open; 
+    < open ? 
+        pass_door3; 
+        sense_facedetection;
+        < facedetection ?
+            say_color_printer1_green :
+          (not facedetection) ?
+        > :
+      (not open) ? 
+    > :
+  (not lightcolor_printer1light_green) ?
 >;
-
+goto_home;
 
 
 

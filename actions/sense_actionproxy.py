@@ -29,6 +29,8 @@ from lightcolor_fluentproxy import LightColorFluentProxy
 from open_fluentproxy import OpenFluentProxy
 from personhere_fluentproxy import PersonHereFluentProxy
 from mypersonhere_fluentproxy import MyPersonHereFluentProxy
+from facedetected_fluentproxy import FaceDetectionFluentProxy
+from legdetection_fluentproxy import LegDetectorFluentProxy
 
 class SenseActionProxy(ActionProxy):
 
@@ -56,9 +58,18 @@ class SenseActionProxy(ActionProxy):
             l = PersonHereFluentProxy(sensingfluent, rosnode=False)
             l.sensingStep()
 
-        elif sensingfluent=='mypershonhere':
+        elif sensingfluent=='mypersonhere':
             l = MyPersonHereFluentProxy(sensingfluent, rosnode=False)
             l.sensingStep()
+
+        elif sensingfluent=='facedetection':
+            l = FaceDetectionFluentProxy(sensingfluent, rosnode=False)
+            l.sensingStep()
+
+        elif sensingfluent=='legdetection':
+            l = LegDetectorFluentProxy(sensingfluent, rosnode=False)
+            l.sensingStep()
+
         else:
             print("ERROR !!! Cannot sense value of fluent %s !!!" %(sensingfluent))
 

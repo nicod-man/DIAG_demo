@@ -55,15 +55,13 @@ class LightColorFluentProxy(FluentProxy):
                 #    %(self.fluentname,fluent_params,s,c,value))
 
                 self.setValue(value,fluent_params)     # 1: true,  0: false,  -1: unknown
+
     # no input params
     def fluent_thread(self, params):
 
         while self.do_run:
             self.sensingStep()
             rospy.sleep(0.5)
-
-
-
 
 
 if __name__ == "__main__":

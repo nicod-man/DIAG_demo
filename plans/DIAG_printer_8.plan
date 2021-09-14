@@ -1,0 +1,6 @@
+sense_facedetection;
+< facedetection ?
+    welcome :
+  (not facedetection) ?
+    say_color_printer1_red;
+>;

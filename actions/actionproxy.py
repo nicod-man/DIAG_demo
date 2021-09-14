@@ -61,6 +61,7 @@ class ActionProxy:
         self.end()
 
     def actionproxy_cb(self, data):
+
         sdata = data.data
         #print(sdata)
 
@@ -72,11 +73,13 @@ class ActionProxy:
         action = None
         params = None
         command = None
+
         v = sdata.split('#')
         if len(v)>1:
-            robot = v[0]
+            #robot = v[0]
             sdata = v[1]
         v = sdata.split('.')
+
         if len(v)!=2:
             raise Exception("ActionProxy: wrong format in %s [%s]" %(TOPIC_PNPACTIONPROXY_STR, sdata))
         command = v[1]
@@ -108,6 +111,7 @@ class ActionProxy:
 
     # start the action monitor thread / non-blocking
     def start(self, params=None):
+
         if self.athread != None:
             self.end()
         self.params = params
@@ -154,7 +158,6 @@ class ActionProxy:
 
     def run_server(self):   # keep the server running -> actions managed by actionproxy_cb
         print("ActionProxy %s running ..." %(self.actionname))
-
         rate = rospy.Rate(1)
         self.server_run = True
         while not rospy.is_shutdown() and self.server_run:

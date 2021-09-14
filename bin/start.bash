@@ -40,12 +40,12 @@ elif [ "$1" == "local" ]; then
 else
 # pull docker services
   docker-compose -f $DCF pull $XSERVER stage navigation speech vision  \
-    actions pnp persondetection
+     pnp persondetection facedetection fer actions legdetection
 fi
 
   # run docker services
   docker-compose -f $DCF up -d $XSERVER stage navigation speech vision \
-    actions pnp persondetection
+     pnp persondetection facedetection fer actions legdetection
 
 
 sleep 10
