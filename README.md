@@ -97,6 +97,9 @@ For development or to run the last version of code, follow these additional inst
 
         ./start.bash dev
         
+  NOTE: if an image is rebuilt, to pull the newer image (it pull ALL the images)
+        
+        ./start.bash dev rmi
         
 # Quick starter
 
