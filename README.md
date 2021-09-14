@@ -83,7 +83,7 @@ For development or to run the last version of code, follow these additional inst
     In `~/.bashrc`
 
         export MARRTINO_APPS_HOME=<PATH_TO>/marrtino_apps
-        export MODELS_HOME=<PATH_TO/models
+        export MODELS_HOME=<PATH_TO>/models
 
 
 * Open a new terminal before running the demo
