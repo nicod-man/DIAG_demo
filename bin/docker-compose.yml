@@ -87,10 +87,11 @@ services:
         - ROBOT_TYPE=$ROBOT_TYPE
     volumes:
         - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - $DEMO_DIR:/home/robot/src/DIAG_demo
     entrypoint:
         - bash
         - -ci
-        - "sleep 15 && cd ~/src/forked_DIAG_DEMO/DIAG_demo/bin && ./init.bash"
+        - "sleep 15 && cd ~/src/DIAG_demo/bin && ./init.bash"
 
   pnp:
     image: iocchi/pnp
