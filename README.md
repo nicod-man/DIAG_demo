@@ -72,12 +72,14 @@ For development or to run the last version of code, follow these additional inst
 * Download MARRtino apps
 
         git clone --depth clone https://nicodman@bitbucket.org/nicodman/marrtino_apps.git
+        git clone --recurse-submodule -j8 https://github.com/nicod-man/thesis.git
+
 
 * Set `MARRTINO_APPS_HOME`, `MODELS_HOME` environment variables
 
     Set
      - `MARRTINO_APPS_HOME` to  `marrtino_apps` folder
-     - `MODELS_HOME` to `<path_to_models_folder>` folder
+     - `MODELS_HOME` to `<path_to_models_folder_inside_thesis_repository>` folder
     
 
     In `~/.bashrc`
