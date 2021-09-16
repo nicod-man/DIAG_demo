@@ -145,6 +145,10 @@ services:
         - /tmp/.X11-unix:/tmp/.X11-unix:rw
         - /dev:/dev
         - $MODELS_HOME/Person-Detection-and-Tracking:/home/robot/src/Person-Detection-and-Tracking
+    entrypoint:
+         - bash
+         - -ci
+         - "python3 stage_fd.py --server -modelname fer"        
 
   facedetection:
     image: nicodman/thesis:facedetection
