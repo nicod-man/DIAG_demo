@@ -126,6 +126,10 @@ services:
     volumes:
         - /tmp/.X11-unix:/tmp/.X11-unix:rw          
         - /dev:/dev
+    entrypoint:
+         - bash
+         - -ci
+         - "python3 stage_pd.py --server"
    
   facedetection:
     image: nicodman/thesis:facedetection
